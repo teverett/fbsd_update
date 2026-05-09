@@ -3,7 +3,7 @@ FreeBSD update ansible playbook
 
 ## Usage
 
-sh run.sh `<IP>`
+sh runall.sh
 
 * An account with the name `ansible`` is required and the account must be a member of the `wheel` group
 * You will need to ssh to the server first, to ensure that ssh keys are accepted
