@@ -1,0 +1,61 @@
+
+- name: check for upgrades
+  ansible.builtin.command:
+    cmd: freebsd-update fetch
+  register: fetch_result
+
+#- name: print fetch_result
+#  ansible.builtin.debug:
+#    msg: freebsd-update fetch returned {{ fetch_result }}
+
+- name: check if updates are ready
+  ansible.builtin.command:
+    cmd: freebsd-update updatesready
+  register: updatesready_result
+  ignore_errors: true
+
+# if rc is 0, there are upgrades to do
+# if rc is 2, there are no upgrades to do
+- name: print updatesready_result
+  ansible.builtin.debug:
+    msg: freebsd-update updatesready returned {{ updatesready_result.rc }}
+
+- name: print updatesready_result
+  ansible.builtin.debug:
+    msg: OS upgrades will be installed
+  when: updatesready_result.rc == 0
+
+# reduce secure level to 0
+- name: set kernel security level
+  ansible.builtin.lineinfile:
+    path: /etc/rc.conf
+    line: kern_securelevel="1"
+    regex: kern_securelevel
+
+# need a reboot
+- name: reboot
+  ansible.builtin.reboot:
+  when: updatesready_result.rc == 0
+
+- name: install upgrades
+  ansible.builtin.command:
+    cmd: freebsd-update install
+  register: intall_result
+  when: updatesready_result.rc == 0
+
+# restore secure level to 2
+- name: set kernel security level
+  ansible.builtin.lineinfile:
+    path: /etc/rc.conf
+    line: kern_securelevel="2"
+    regex: kern_securelevel
+
+- name: reboot
+  ansible.builtin.reboot:
+  when: updatesready_result.rc == 0
+
+- name: Wait 600 seconds for target connection to become reachable/usable
+  ansible.builtin.wait_for_connection:
+  when: updatesready_result.rc == 0
+
+

@@ -1,0 +1,45 @@
+---
+    
+- hosts: all
+  become: true
+  become_method: su
+  become_user: root
+  pre_tasks:
+  - name: set kernel security level
+    ansible.builtin.lineinfile:
+      path: /etc/rc.conf
+      line: kern_securelevel="1"
+      regex: kern_securelevel  
+
+  - name: reboot
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+
+  - name: rebuild package database
+    raw: 'pkg update -f'
+    args:
+      executable: /bin/sh  
+
+  - name: install python
+    raw: 'pkg install -y python'
+    args:
+      executable: /bin/sh
+  
+  - name: reboot
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+
+  post_tasks:
+  - name: set kernel security level
+    ansible.builtin.lineinfile:
+      path: /etc/rc.conf
+      line: kern_securelevel="2"
+      regex: kern_securelevel
+  - name: reboot
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+
+  roles:
+     - generic/upgrade
+     - generic/update
+
