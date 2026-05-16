@@ -16,14 +16,10 @@
       reboot_timeout: 3600
 
   - name: rebuild package database
-    raw: 'pkg update -f'
-    args:
-      executable: /bin/sh  
+    ansible.builtin.command: 'pkg update -f'
 
   - name: install python
-    raw: 'pkg install -y python'
-    args:
-      executable: /bin/sh
+    ansible.builtin.command: 'pkg install -y python'
   
   - name: reboot
     ansible.builtin.reboot:
@@ -35,6 +31,7 @@
       path: /etc/rc.conf
       line: kern_securelevel="2"
       regex: kern_securelevel
+
   - name: reboot
     ansible.builtin.reboot:
       reboot_timeout: 3600

@@ -1,12 +1,9 @@
 
-- name: cleanup old packages
-  ansible.builtin.shell:
-    cmd: pkg autoremove -y
+ - name: cleanup old packages
+   ansible.builtin.command: pkg autoremove -y
 
-- name: update packages
-  ansible.builtin.shell:
-    cmd: pkg upgrade -y
+ - name: update packages
+   ansible.builtin.command: pkg upgrade -y
 
-- name: clean packages
-  ansible.builtin.shell:
-    cmd: pkg clean -y
+ - name: clean packages
+   ansible.builtin.command: pkg clean -y
