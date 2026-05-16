@@ -8,12 +8,13 @@ ldap3
 db
 gitserver
 mail
-couchdb1
-couchdb2
-couchdb3
-monitor
+#couchdb1
+#couchdb2
+#couchdb3
+#monitor
 mailcradle2
 backup1
+#wurld1
 
 [all:vars]
 ansible_connection=ssh
