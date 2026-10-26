@@ -1,6 +1,7 @@
 ---
     
 - hosts: all
+  serial: 1
   become: true
   become_method: su
   become_user: root
@@ -14,6 +15,7 @@
   - name: reboot
     ansible.builtin.reboot:
       reboot_timeout: 3600
+      post_reboot_delay: 30
 
   - name: rebuild package database
     ansible.builtin.command: 'pkg update -f'
@@ -24,6 +26,7 @@
   - name: reboot
     ansible.builtin.reboot:
       reboot_timeout: 3600
+      post_reboot_delay: 30
 
   post_tasks:
   - name: set kernel security level
@@ -35,6 +38,7 @@
   - name: reboot
     ansible.builtin.reboot:
       reboot_timeout: 3600
+      post_reboot_delay: 30
 
   roles:
      - generic/upgrade
